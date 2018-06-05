@@ -40,7 +40,11 @@ def eval():
     print("dataset size:", len(eval_loader.dataset))
 
     if os.path.exists(args.resume):
-        checkoint = torch.load(args.resume,map_location=lambda storage, loc: storage)
+        if is_GPU:
+            checkoint = torch.load(args.resume)
+        else:
+            checkoint = torch.load(args.resume, map_location=lambda storage, loc: storage)
+
         start_epoch = checkoint['epoch']
         net.load = net.load_state_dict(checkoint['model'])
         num_iter= checkoint['iter']

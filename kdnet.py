@@ -36,11 +36,15 @@ class KDNet(nn.Module):
         self.bn9 = nn.BatchNorm1d(512 * 3)
         self.bn10 = nn.BatchNorm1d(128 * 3)
 
-    def kdconv(self,x, num_pts, featdim, sel, conv, bn):
+    def kdconv(self,x, num_pts, featdim, sel, conv, bn, dropout=False):
         ## x [N,8,2048]  sel [N,2048]
 
         batchsize = x.size(0)
-        x = F.relu(bn(conv(x)))  ## [N,3*32,2048]
+        if dropout:
+            x = F.relu(F.dropout(bn(conv(x)),p=0.5))
+        else:
+            x = F.relu(bn(conv(x)))  ## [N,3*32,2048]
+
         x = x.view(-1, featdim, 3, num_pts)  ## [N,32,3,2048]
         x = x.view(-1, featdim, 3 * num_pts)  ## [N,32,3*2048]
         x = x.transpose(1, 0).contiguous()  ##[32,N,3*2048]
@@ -79,9 +83,9 @@ class KDNet(nn.Module):
         x5 = self.kdconv(x4, 64, 128, c[-5], self.conv5, self.bn5)
         x6 = self.kdconv(x5, 32, 256, c[-6], self.conv6, self.bn6)
         x7 = self.kdconv(x6, 16, 256, c[-7], self.conv7, self.bn7)
-        x8 = self.kdconv(x7, 8, 512, c[-8], self.conv8, self.bn8)
-        x9 = self.kdconv(x8, 4, 512, c[-9], self.conv9, self.bn9)
-        x10 = self.kdconv(x9, 2, 128, c[-10], self.conv10, self.bn10) ##[N,128,1]
+        x8 = self.kdconv(x7, 8, 512, c[-8], self.conv8, self.bn8,dropout=True)
+        x9 = self.kdconv(x8, 4, 512, c[-9], self.conv9, self.bn9,dropout=True)
+        x10 = self.kdconv(x9, 2, 128, c[-10], self.conv10, self.bn10,dropout=True) ##[N,128,1]
 
         scores=self.fc8(torch.squeeze(x10)) ##[N,40]
         pred = F.log_softmax(scores,dim=1)
