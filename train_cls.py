@@ -20,7 +20,9 @@ is_GPU=torch.cuda.is_available()
 
 parser = argparse.ArgumentParser(description='KD-network')
 parser.add_argument('--data', metavar='DIR',default='/home/gaoyuzhe/Downloads/PointCNN/data/modelnet/test_files.txt',
-                    help='path to dataset')
+                    help='txt file to dataset')
+parser.add_argument('--data-eval', metavar='DIR',default='/home/gaoyuzhe/Downloads/PointCNN/data/modelnet/test_files.txt',
+                    help='txt file to validate dataset')
 parser.add_argument('--log', metavar='LOG',default='log.txt',
                     help='filename of log file')
 
@@ -73,6 +75,35 @@ def log(filename,epoch,batch,loss):
 
     f1.write('\nin epoch{} batch{} loss={} '.format(epoch,batch,loss))
 
+def evaluate(model_test):
+    model_test.eval()
+    total_correct=0
+
+    data_eval = pts_cls_dataset(datalist_path=args.data_eval)
+    eval_loader = torch.utils.data.DataLoader(data_eval,
+                    batch_size=4, shuffle=True, collate_fn=pts_collate)
+    print ("dataset size:",len(eval_loader.dataset))
+
+    for batch_idx, (split_dims, pts, label) in enumerate(eval_loader):
+        t1 = time.time()
+        if is_GPU:
+            pts = Variable(pts.cuda())
+            label = Variable(label.cuda())
+        else:
+            pts = Variable(pts)
+            label = Variable(label)
+        pred = net(pts, split_dims)
+
+        _, pred_index = torch.max(pred, dim=1)
+        num_correct = (pred_index.eq(label)).data.cpu().sum().item()
+        total_correct +=num_correct
+
+    print ('the average correct rate:{}'.format(total_correct*1.0/(len(eval_loader.dataset))))
+
+    model_test.train()
+    with open(logname,'a') as f:
+        f.write('\nthe evaluate average iou:{}'.format(total_correct*1.0/(len(eval_loader.dataset))))
+
 def train():
 
     net.train()
@@ -120,6 +151,7 @@ def train():
                 save_checkpoint(epoch, net, num_iter)
             if num_iter%(args.log_step)==0 and num_iter!=0:
                 log(logname, epoch, num_iter, loss.data)
+                evaluate(net)
 
         end_epochtime = time.time()
         print('--------------------------------------------------------')
