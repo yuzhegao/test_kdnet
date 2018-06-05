@@ -149,9 +149,9 @@ def train():
             print('In Epoch{} Iter{},loss={} accuracy={}  time cost:{}'.format(epoch,num_iter, loss.data,num_correct.item() / args.batch_size,t2-t1))
             if num_iter%(args.log_step*10)==0 and num_iter!=0:
                 save_checkpoint(epoch, net, num_iter)
+                evaluate(net)
             if num_iter%(args.log_step)==0 and num_iter!=0:
                 log(logname, epoch, num_iter, loss.data)
-                evaluate(net)
 
         end_epochtime = time.time()
         print('--------------------------------------------------------')
