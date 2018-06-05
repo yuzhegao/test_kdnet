@@ -28,6 +28,8 @@ parser.add_argument('--resume', default='cls_modelnet40.pth',type=str, metavar='
 args=parser.parse_args()
 
 net=KDNet()
+if is_GPU:
+    net=net.cuda()
 
 def eval():
     net.eval()
@@ -48,7 +50,6 @@ def eval():
         exit()
 
     for batch_idx, (split_dims, pts, label) in enumerate(eval_loader):
-        t1 = time.time()
         if is_GPU:
             pts = Variable(pts.cuda())
             label = Variable(label.cuda())
