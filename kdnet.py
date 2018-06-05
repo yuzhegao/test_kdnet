@@ -68,7 +68,7 @@ class KDNet(nn.Module):
     def forward(self, x, c): ## x [N,3,2048]
         init_num_pts=x.size()[-1]
 
-        x = torch.transpose(x,dim0=2,dim1=1).view(-1,3) ##[N*2048,3]
+        x = torch.transpose(x,dim0=2,dim1=1).contiguous().view(-1,3) ##[N*2048,3]
         x = self.fc1(x) ##[N*2048,32]
         x = torch.transpose(x.view(-1,init_num_pts,32),dim0=2,dim1=1) ##[N,32,2048]
 
