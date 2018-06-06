@@ -53,7 +53,7 @@ if is_GPU:
 
 my_dataset=pts_cls_dataset(datalist_path=args.data)
 data_loader = torch.utils.data.DataLoader(my_dataset,
-            batch_size=args.batch_size, shuffle=True, collate_fn=pts_collate)
+            batch_size=args.batch_size, shuffle=True, num_workers=4,collate_fn=pts_collate)
 
 net=KDNet()
 if is_GPU:
@@ -102,7 +102,7 @@ def evaluate(model_test):
 
     model_test.train()
     with open(logname,'a') as f:
-        f.write('\nthe evaluate average iou:{}'.format(total_correct*1.0/(len(eval_loader.dataset))))
+        f.write('\nthe evaluate average accuracy:{}'.format(total_correct*1.0/(len(eval_loader.dataset))))
 
 def train():
 

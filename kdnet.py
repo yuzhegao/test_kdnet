@@ -18,8 +18,8 @@ class KDNet(nn.Module):
         self.conv7 = nn.Conv1d(256*2, 256 * 3, 1, 1)
         self.conv8 = nn.Conv1d(256*2, 512 * 3, 1, 1)
         self.conv9 = nn.Conv1d(512*2, 512 * 3, 1, 1)
-        self.conv10 = nn.Conv1d(512*2, 128 * 3, 1, 1)
-        self.fc8 = nn.Linear(256, num_class)
+        self.conv10 = nn.Conv1d(512*2, 1024 * 3, 1, 1)
+        self.fc8 = nn.Linear(2048, num_class)
 
         self.bn1 = nn.BatchNorm1d(32 * 3)
         self.bn2 = nn.BatchNorm1d(64 * 3)
@@ -30,7 +30,7 @@ class KDNet(nn.Module):
         self.bn7 = nn.BatchNorm1d(256 * 3)
         self.bn8 = nn.BatchNorm1d(512 * 3)
         self.bn9 = nn.BatchNorm1d(512 * 3)
-        self.bn10 = nn.BatchNorm1d(128 * 3)
+        self.bn10 = nn.BatchNorm1d(1024 * 3)
 
         for m in self.modules():
             if isinstance(m, nn.Conv1d):
@@ -86,7 +86,7 @@ class KDNet(nn.Module):
         x7 = self.kdconv(x6, 16, 256, c[-7], self.conv7, self.bn7, dropout=True)
         x8 = self.kdconv(x7, 8, 512, c[-8], self.conv8, self.bn8, dropout=True)
         x9 = self.kdconv(x8, 4, 512, c[-9], self.conv9, self.bn9, dropout=True)
-        x10 = self.kdconv(x9, 2, 128, c[-10], self.conv10, self.bn10, dropout=True) ##[N,128,1]
+        x10 = self.kdconv(x9, 2, 1024, c[-10], self.conv10, self.bn10, dropout=True) ##[N,128,1]
 
         scores=self.fc8(torch.squeeze(x10)) ##[N,40]
         pred = F.log_softmax(scores,dim=1)
