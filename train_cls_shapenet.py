@@ -19,24 +19,24 @@ from data_utils import shapenet_dataset,pts_collate
 is_GPU=torch.cuda.is_available()
 
 parser = argparse.ArgumentParser(description='KD-network')
-parser.add_argument('--data', metavar='DIR',default='shapenetcore_partanno_segmentation_benchmark_v0',
+parser.add_argument('--data', metavar='DIR',default='../3d_data/shapenetcore_partanno_segmentation_benchmark_v0',
                     help='txt file to dataset')
-parser.add_argument('--data-eval', metavar='DIR',default='shapenetcore_partanno_segmentation_benchmark_v0',
+parser.add_argument('--data-eval', metavar='DIR',default='../3d_data/shapenetcore_partanno_segmentation_benchmark_v0',
                     help='txt file to validate dataset')
 parser.add_argument('--log', metavar='LOG',default='log.txt',
                     help='filename of log file')
 
 parser.add_argument('--gpu', default=0, type=int, metavar='N',
                     help='the index  of GPU where program run')
-parser.add_argument('--epochs', default=200, type=int, metavar='N',
+parser.add_argument('--epochs', default=2000, type=int, metavar='N',
                     help='number of total epochs to run')
-parser.add_argument('--log-step', default=500, type=int, metavar='N',
+parser.add_argument('--log-step', default=50, type=int, metavar='N',
                     help='number of iter to write log')
 parser.add_argument('--test-step', default=1000, type=int, metavar='N',
                     help='number of iter to evaluate ')
 parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
                     help='manual epoch number (useful on restarts)')
-parser.add_argument('-bs',  '--batch-size', default=32, type=int,
+parser.add_argument('-bs',  '--batch-size', default=64, type=int,
                     metavar='N', help='mini-batch size (default: 2)')
 parser.add_argument('--lr', '--learning-rate', default=0.002, type=float,
                     metavar='LR', help='initial learning rate')

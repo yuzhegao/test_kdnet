@@ -161,12 +161,10 @@ class shapenet_dataset(data.Dataset):
         point_set = point_set[choice, :]
         point_set = point_set + 1e-5 * np.random.rand(*point_set.shape)
 
-        seg = seg[choice]
-        point_set = torch.from_numpy(point_set.astype(np.float32))
-        seg = torch.from_numpy(seg.astype(np.int64))
-        cls = torch.from_numpy(np.array([cls]).astype(np.int64))
+        split_dims,tree_pts=my_kdtree.make_cKDTree(point_set,depth=10)
+
         if self.classification:
-            return point_set, cls
+            return split_dims,point_set, cls
         else:
             return point_set, seg
 
