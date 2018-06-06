@@ -1,2 +1,5 @@
 training:
-python train.py --data --resume --
+python train_cls.py --data '../3d_data/modelnet40_ply_hdf5_2048/train_files.txt' --log 'cls_modelnet40.txt' --gpu 3 --epochs 20000 --log-step 50 -bs 64 --lr 0.002 --resume 'cls_modelnet40.pth' --data-eval '../3d_data/modelnet40_ply_hdf5_2048/test_files.txt'
+
+eval:
+python eval_cls.py --data-eval '../3d_data/modelnet40_ply_hdf5_2048/test_files.txt' --resume 'cls_modelnet40.pth' --gpu 3

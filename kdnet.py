@@ -4,10 +4,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 
-## test
-import torch.utils.data as data
-from data_utils import pts_cls_dataset,pts_collate
-
 
 class KDNet(nn.Module):
     def __init__(self, num_class=40):
@@ -35,6 +31,12 @@ class KDNet(nn.Module):
         self.bn8 = nn.BatchNorm1d(512 * 3)
         self.bn9 = nn.BatchNorm1d(512 * 3)
         self.bn10 = nn.BatchNorm1d(128 * 3)
+
+        for m in self.modules():
+            if isinstance(m, nn.Conv1d):
+                if m.bias is not None:
+                    m.bias.data.zero_()
+
 
     def kdconv(self,x, num_pts, featdim, sel, conv, bn, dropout=False):   ##[N,C,W] in pytorch
         ## x [N,8,1024]  sel [N,1024]
@@ -80,11 +82,11 @@ class KDNet(nn.Module):
         x3 = self.kdconv(x2, 256, 64, c[-3], self.conv3, self.bn3)
         x4 = self.kdconv(x3, 128, 128, c[-4], self.conv4, self.bn4)
         x5 = self.kdconv(x4, 64, 128, c[-5], self.conv5, self.bn5)
-        x6 = self.kdconv(x5, 32, 256, c[-6], self.conv6, self.bn6)
-        x7 = self.kdconv(x6, 16, 256, c[-7], self.conv7, self.bn7)
-        x8 = self.kdconv(x7, 8, 512, c[-8], self.conv8, self.bn8)
-        x9 = self.kdconv(x8, 4, 512, c[-9], self.conv9, self.bn9)
-        x10 = self.kdconv(x9, 2, 128, c[-10], self.conv10, self.bn10) ##[N,128,1]
+        x6 = self.kdconv(x5, 32, 256, c[-6], self.conv6, self.bn6, dropout=True)
+        x7 = self.kdconv(x6, 16, 256, c[-7], self.conv7, self.bn7, dropout=True)
+        x8 = self.kdconv(x7, 8, 512, c[-8], self.conv8, self.bn8, dropout=True)
+        x9 = self.kdconv(x8, 4, 512, c[-9], self.conv9, self.bn9, dropout=True)
+        x10 = self.kdconv(x9, 2, 128, c[-10], self.conv10, self.bn10, dropout=True) ##[N,128,1]
 
         scores=self.fc8(torch.squeeze(x10)) ##[N,40]
         pred = F.log_softmax(scores,dim=1)

@@ -48,6 +48,12 @@ class pts_cls_dataset(data.Dataset):
             choice=np.random.choice(len(pts),self.num_points,replace=False)
             pts=pts[choice]
 
+        ## data argument
+        pts = pts + np.random.uniform(low=-0.1,high=0.1,size=[1,3]) ## translation [-0.1,0.1]
+        scale_param=np.random.uniform(low=0.66,high=1.5)
+        pts[:,2]=pts[:,2]*scale_param
+        pts[:,0]=pts[:,0]*scale_param
+
         split_dims,tree_pts=my_kdtree.make_cKDTree(pts,depth=self.depth)
 
         tree_pts=torch.from_numpy(tree_pts.astype(np.float32))
