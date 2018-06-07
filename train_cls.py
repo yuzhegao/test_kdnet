@@ -19,9 +19,9 @@ from data_utils import pts_cls_dataset,pts_collate
 is_GPU=torch.cuda.is_available()
 
 parser = argparse.ArgumentParser(description='KD-network')
-parser.add_argument('--data', metavar='DIR',default='/home/gaoyuzhe/Downloads/PointCNN/data/modelnet/test_files.txt',
+parser.add_argument('--data', metavar='DIR',default='/home/gaoyuzhe/Downloads/3d_data/modelnet/test_files.txt',
                     help='txt file to dataset')
-parser.add_argument('--data-eval', metavar='DIR',default='/home/gaoyuzhe/Downloads/PointCNN/data/modelnet/test_files.txt',
+parser.add_argument('--data-eval', metavar='DIR',default='/home/gaoyuzhe/Downloads/3d_data/modelnet/test_files.txt',
                     help='txt file to validate dataset')
 parser.add_argument('--log', metavar='LOG',default='log.txt',
                     help='filename of log file')
@@ -36,7 +36,7 @@ parser.add_argument('--test-step', default=1000, type=int, metavar='N',
                     help='number of iter to evaluate ')
 parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
                     help='manual epoch number (useful on restarts)')
-parser.add_argument('-bs',  '--batch-size', default=32, type=int,
+parser.add_argument('-bs',  '--batch-size', default=4, type=int,
                     metavar='N', help='mini-batch size (default: 2)')
 parser.add_argument('--lr', '--learning-rate', default=0.002, type=float,
                     metavar='LR', help='initial learning rate')

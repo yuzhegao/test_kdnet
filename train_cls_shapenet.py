@@ -19,9 +19,9 @@ from data_utils import shapenet_dataset,pts_collate
 is_GPU=torch.cuda.is_available()
 
 parser = argparse.ArgumentParser(description='KD-network')
-parser.add_argument('--data', metavar='DIR',default='../3d_data/shapenetcore_partanno_segmentation_benchmark_v0',
+parser.add_argument('--data', metavar='DIR',default='/home/gaoyuzhe/Downloads/3d_data/shapenetcore_partanno_segmentation_benchmark_v0',
                     help='txt file to dataset')
-parser.add_argument('--data-eval', metavar='DIR',default='../3d_data/shapenetcore_partanno_segmentation_benchmark_v0',
+parser.add_argument('--data-eval', metavar='DIR',default='/home/gaoyuzhe/Downloads/3d_data/shapenetcore_partanno_segmentation_benchmark_v0',
                     help='txt file to validate dataset')
 parser.add_argument('--log', metavar='LOG',default='log.txt',
                     help='filename of log file')

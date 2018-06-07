@@ -83,8 +83,8 @@ def pts_collate(batch):
     for k in range(depth):
         split_dims_batch[k]=np.squeeze(split_dims_batch[k])
 
-    pts_batch,label_batch=torch.transpose(torch.stack(pts_batch,dim=0),dim0=1,dim1=2),\
-                          torch.from_numpy(np.squeeze(label_batch))
+    pts_batch=torch.transpose(torch.stack(pts_batch,dim=0),dim0=1,dim1=2)
+    label_batch =torch.from_numpy(np.squeeze(label_batch))
 
     return split_dims_batch,pts_batch,label_batch
 
@@ -162,9 +162,10 @@ class shapenet_dataset(data.Dataset):
         point_set = point_set + 1e-5 * np.random.rand(*point_set.shape)
 
         split_dims,tree_pts=my_kdtree.make_cKDTree(point_set,depth=10)
+        tree_pts = torch.from_numpy(tree_pts.astype(np.float32))
 
         if self.classification:
-            return split_dims,point_set, cls
+            return split_dims,tree_pts, cls
         else:
             return point_set, seg
 
