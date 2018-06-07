@@ -30,13 +30,13 @@ parser.add_argument('--gpu', default=0, type=int, metavar='N',
                     help='the index  of GPU where program run')
 parser.add_argument('--epochs', default=2000, type=int, metavar='N',
                     help='number of total epochs to run')
-parser.add_argument('--log-step', default=50, type=int, metavar='N',
+parser.add_argument('--log-step', default=2, type=int, metavar='N',
                     help='number of iter to write log')
 parser.add_argument('--test-step', default=1000, type=int, metavar='N',
                     help='number of iter to evaluate ')
 parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
                     help='manual epoch number (useful on restarts)')
-parser.add_argument('-bs',  '--batch-size', default=64, type=int,
+parser.add_argument('-bs',  '--batch-size', default=4, type=int,
                     metavar='N', help='mini-batch size (default: 2)')
 parser.add_argument('--lr', '--learning-rate', default=0.002, type=float,
                     metavar='LR', help='initial learning rate')
@@ -68,18 +68,18 @@ def save_checkpoint(epoch,model,num_iter):
         'iter':num_iter,
     },args.resume)
 
-def log(filename,epoch,batch,loss):
+def log(filename,epoch,batch,loss,acc):
     f1=open(filename,'a')
     if epoch == 0 and batch == 0:
         f1.write("\nstart training in {}".format(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))))
 
-    f1.write('\nin epoch{} batch{} loss={} '.format(epoch,batch,loss))
+    f1.write('\nin epoch{} batch{} loss={} acc={}'.format(epoch,batch,loss,acc))
 
 def evaluate(model_test):
     model_test.eval()
     total_correct=0
 
-    data_eval = shapenet_dataset(root=args.data_eval,train=False)
+    data_eval = shapenet_dataset(root=args.data_eval,classification=True,train=False)
     eval_loader = torch.utils.data.DataLoader(data_eval,
                     batch_size=4, shuffle=True, num_workers=4,collate_fn=pts_collate)
     print ("dataset size:",len(eval_loader.dataset))
@@ -102,7 +102,7 @@ def evaluate(model_test):
 
     model_test.train()
     with open(logname,'a') as f:
-        f.write('\nthe evaluate average accuracy:{}'.format(total_correct*1.0/(len(eval_loader.dataset))))
+        f.write('\nthe evaluate average accuracy:{}\n'.format(total_correct*1.0/(len(eval_loader.dataset))))
 
 def train():
 
@@ -151,7 +151,7 @@ def train():
                 save_checkpoint(epoch, net, num_iter)
                 evaluate(net)
             if num_iter%(args.log_step)==0 and num_iter!=0:
-                log(logname, epoch, num_iter, loss.data)
+                log(logname, epoch, num_iter, loss.data,num_correct.item() / args.batch_size)
 
         end_epochtime = time.time()
         print('--------------------------------------------------------')
