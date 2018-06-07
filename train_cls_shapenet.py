@@ -81,11 +81,12 @@ def evaluate(model_test):
 
     data_eval = shapenet_dataset(root=args.data_eval,classification=True,train=False)
     eval_loader = torch.utils.data.DataLoader(data_eval,
-                    batch_size=4, shuffle=True, num_workers=4,collate_fn=pts_collate)
+                    batch_size=args.batch_size, shuffle=True, num_workers=4,collate_fn=pts_collate)
     print ("dataset size:",len(eval_loader.dataset))
 
     for batch_idx, (split_dims, pts, label) in enumerate(eval_loader):
         t1 = time.time()
+        print ('batch {}'.format(batch_idx))
         if is_GPU:
             pts = Variable(pts.cuda())
             label = Variable(label.cuda())
