@@ -58,7 +58,7 @@ data_loader = torch.utils.data.DataLoader(my_dataset,
 net=KDNet()
 if is_GPU:
     net=net.cuda()
-optimizer = torch.optim.Adam(net.parameters(), lr=args.lr, betas=(0.5, 0.999))
+optimizer = torch.optim.Adam(net.parameters(), lr=args.lr, betas=(0.9, 0.999))
 critenrion=nn.NLLLoss()
 
 def save_checkpoint(epoch,model,num_iter):
@@ -81,7 +81,7 @@ def evaluate(model_test):
 
     data_eval = pts_cls_dataset(datalist_path=args.data_eval)
     eval_loader = torch.utils.data.DataLoader(data_eval,
-                    batch_size=args.batch_size, shuffle=True, collate_fn=pts_collate)
+                    batch_size=args.batch_size, shuffle=True,num_workers=4, collate_fn=pts_collate)
     print ("dataset size:",len(eval_loader.dataset))
 
     for batch_idx, (split_dims, pts, label) in enumerate(eval_loader):

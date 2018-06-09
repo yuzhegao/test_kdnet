@@ -117,5 +117,7 @@ print (tree_pts.shape)
 
 #print (split_dims)
 print (len(split_dims))
-print (len(split_dims[-10]))
+print (split_dims[-1].shape)
+print (split_dims[-9].shape)
+print (split_dims[-10].shape)
 """

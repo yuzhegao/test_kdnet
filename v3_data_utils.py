@@ -33,11 +33,12 @@ def load_cls(filelist,use_extra_feature=False):
 # modelnet40
 #########################
 class pts_cls_dataset(data.Dataset):
-    def __init__(self,datalist_path,num_points=1024,max_depth=10,use_extra_feature=False):
+    def __init__(self,datalist_path,num_points=1024,max_depth=10,data_argument=True,use_extra_feature=False):
         super(pts_cls_dataset, self).__init__()
         self.depth=max_depth
         self.num_points=num_points
         self.extra_feature=use_extra_feature
+        self.data_argument=data_argument
         self.pts, self.label = load_cls(datalist_path,use_extra_feature=use_extra_feature)
         print ('data size:{} label size:{}'.format(self.pts.shape,self.label.shape))
 
@@ -48,29 +49,29 @@ class pts_cls_dataset(data.Dataset):
             pts=pts[choice]
 
         ## data argument
-        scale_param=np.random.uniform(low=0.66,high=1.5)
-        pts[:, 2] = pts[:, 2] * scale_param
-        pts[:, 0] = pts[:, 0] * scale_param ## scale horizonal plane
+        if self.data_argument:
+            scale_param = np.random.uniform(low=0.66, high=1.5)
+            pts[:, 2] = pts[:, 2] * scale_param
+            pts[:, 0] = pts[:, 0] * scale_param  ## scale horizonal plane
 
-        """
-        rotation_angle = np.random.uniform() * 2 * np.pi
-        cosval = np.cos(rotation_angle)
-        sinval = np.sin(rotation_angle)
-        rotation_matrix = np.array([[cosval, 0, sinval],
-                                    [0, 1, 0],
-                                    [-sinval, 0, cosval]])
-        pts = pts.dot(rotation_matrix)  ## rotate
-        """
+            """
+            rotation_angle = np.random.uniform() * 2 * np.pi
+            cosval = np.cos(rotation_angle)
+            sinval = np.sin(rotation_angle)
+            rotation_matrix = np.array([[cosval, 0, sinval],
+                                        [0, 1, 0],
+                                        [-sinval, 0, cosval]])
+            pts = pts.dot(rotation_matrix)  ## rotate
+            """
 
-        pts = pts + np.random.uniform(low=-0.1,high=0.1,size=[1,3]) ## translation [-0.1,0.1]
+            pts = pts + np.random.uniform(low=-0.1, high=0.1, size=[1, 3])  ## translation [-0.1,0.1]
 
-        """
-        sigma = 0.01
-        clip = 0.05
-        jittered_data = np.clip(sigma * np.random.randn(self.num_points, 3), -1 * clip, clip)
-        pts+=jittered_data ## jitter
-        """
-
+            """
+            sigma = 0.01
+            clip = 0.05
+            jittered_data = np.clip(sigma * np.random.randn(self.num_points, 3), -1 * clip, clip)
+            pts+=jittered_data ## jitter
+            """
 
         split_dims,tree_pts=v3_kdtree.make_cKDTree(pts,depth=self.depth)
 

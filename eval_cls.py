@@ -12,14 +12,14 @@ import torch.utils.data
 import torch.nn.functional as F
 from torch.autograd import Variable
 
-from kdnet import KDNet
-from data_utils import pts_cls_dataset,pts_collate
+from v3_kdnet import KDNet
+from v3_data_utils import pts_cls_dataset,pts_collate
 
 
 is_GPU=torch.cuda.is_available()
 
 parser = argparse.ArgumentParser(description='KD-network')
-parser.add_argument('--data-eval', metavar='DIR',default='/home/gaoyuzhe/Downloads/PointCNN/data/modelnet/test_files.txt',
+parser.add_argument('--data-eval', metavar='DIR',default='/home/gaoyuzhe/Downloads/3d_data/modelnet/test_files.txt',
                     help='txt file to validate dataset')
 parser.add_argument('--gpu', default=0, type=int, metavar='N',
                     help='the index  of GPU where program run')

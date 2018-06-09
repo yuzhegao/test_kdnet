@@ -8,8 +8,8 @@ from torch.autograd import Variable
 class KDNet(nn.Module):
     def __init__(self, num_class=40):
         super(KDNet, self).__init__()
-        self.fc1=nn.Linear(3,32)
-        self.conv1 = nn.Conv1d(32*2, 32 * 3, 1, 1)
+        self.fc1=nn.Linear(3,8)
+        self.conv1 = nn.Conv1d(8*2, 32 * 3, 1, 1)
         self.conv2 = nn.Conv1d(32*2, 64 * 3, 1, 1)
         self.conv3 = nn.Conv1d(64*2, 64 * 3, 1, 1)
         self.conv4 = nn.Conv1d(64*2, 128 * 3, 1, 1)
@@ -56,7 +56,7 @@ class KDNet(nn.Module):
         if dropout:
             x = F.relu(F.dropout(bn(conv(x)),p=0.5))
         else:
-            x = F.relu(bn(conv(x)))
+            x = F.relu(conv(x))
 
         num_pts = num_pts/2 ## 512
         featdim_out= x.size(1)/3 ## 32
@@ -92,7 +92,7 @@ class KDNet(nn.Module):
 
         x = torch.transpose(x,dim0=2,dim1=1).contiguous().view(-1,3) ##[N*1024,3]
         x = self.fc1(x) ##[N*1024,32]
-        x = torch.transpose(x.view(-1,init_num_pts,32),dim0=2,dim1=1) ##[N,32,1024]
+        x = torch.transpose(x.view(-1,init_num_pts,8),dim0=2,dim1=1) ##[N,32,1024]
 
         x1 = self.kdconv(x, c[-1], self.conv1, self.bn1)
         x2 = self.kdconv(x1, c[-2], self.conv2, self.bn2)
