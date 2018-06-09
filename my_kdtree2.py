@@ -60,7 +60,7 @@ class kdtree2(object):
         root.right = self.createKDTree(root.right, data_list[(LEN / 2 + 1):], level=level + 1)  ##1025~2047
         return root
 
-'''
+"""
 import h5py
 data = h5py.File('/home/gaoyuzhe/Downloads/3d_data/modelnet/ply_data_test0.h5')
 print (data['data'].shape)
@@ -70,11 +70,9 @@ pts=data['data'][idx]
 print (pts.shape) ## when the input of tree1 is 1024,the tree2 is 2048 !!!
 
 tree=kdtree2(pts)
-tree.cut_dims=tree.cut_dims[1:-1]
-
 
 
 print (tree.cut_dims)
 print (len(tree.cut_dims))
 print (len(tree.cut_dims[-1]))
-'''
+"""
