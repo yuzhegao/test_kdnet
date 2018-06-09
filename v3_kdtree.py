@@ -104,6 +104,7 @@ def make_cKDTree(point_set, depth):
     return cutdims, tree
 
 
+"""
 data = h5py.File('/home/gaoyuzhe/Downloads/3d_data/modelnet/ply_data_test0.h5')
 print (data['data'].shape)
 
@@ -117,3 +118,4 @@ print (tree_pts.shape)
 #print (split_dims)
 print (len(split_dims))
 print (len(split_dims[-10]))
+"""

@@ -52,6 +52,7 @@ class pts_cls_dataset(data.Dataset):
         pts[:, 2] = pts[:, 2] * scale_param
         pts[:, 0] = pts[:, 0] * scale_param ## scale horizonal plane
 
+        """
         rotation_angle = np.random.uniform() * 2 * np.pi
         cosval = np.cos(rotation_angle)
         sinval = np.sin(rotation_angle)
@@ -59,13 +60,16 @@ class pts_cls_dataset(data.Dataset):
                                     [0, 1, 0],
                                     [-sinval, 0, cosval]])
         pts = pts.dot(rotation_matrix)  ## rotate
+        """
 
         pts = pts + np.random.uniform(low=-0.1,high=0.1,size=[1,3]) ## translation [-0.1,0.1]
 
+        """
         sigma = 0.01
         clip = 0.05
         jittered_data = np.clip(sigma * np.random.randn(self.num_points, 3), -1 * clip, clip)
         pts+=jittered_data ## jitter
+        """
 
 
         split_dims,tree_pts=v3_kdtree.make_cKDTree(pts,depth=self.depth)

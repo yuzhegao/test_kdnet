@@ -81,10 +81,11 @@ def evaluate(model_test):
 
     data_eval = pts_cls_dataset(datalist_path=args.data_eval)
     eval_loader = torch.utils.data.DataLoader(data_eval,
-                    batch_size=4, shuffle=True, collate_fn=pts_collate)
+                    batch_size=args.batch_size, shuffle=True, collate_fn=pts_collate)
     print ("dataset size:",len(eval_loader.dataset))
 
     for batch_idx, (split_dims, pts, label) in enumerate(eval_loader):
+        print (batch_idx)
         t1 = time.time()
         if is_GPU:
             pts = Variable(pts.cuda())
@@ -102,7 +103,7 @@ def evaluate(model_test):
 
     model_test.train()
     with open(logname,'a') as f:
-        f.write('\nthe evaluate average accuracy:{}'.format(total_correct*1.0/(len(eval_loader.dataset))))
+        f.write('\n\nthe evaluate average accuracy:{}\n'.format(total_correct*1.0/(len(eval_loader.dataset))))
 
 def train():
 
