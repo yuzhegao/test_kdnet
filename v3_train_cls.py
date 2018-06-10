@@ -68,12 +68,12 @@ def save_checkpoint(epoch,model,num_iter):
         'iter':num_iter,
     },args.resume)
 
-def log(filename,epoch,batch,loss):
+def log(filename,epoch,batch,loss,acc):
     f1=open(filename,'a')
     if epoch == 0 and batch == 0:
         f1.write("\nstart training in {}".format(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))))
 
-    f1.write('\nin epoch{} batch{} loss={} '.format(epoch,batch,loss))
+    f1.write('\nin epoch{} batch{} loss={} acc={}'.format(epoch,batch,loss,acc))
 
 def evaluate(model_test):
     model_test.eval()
@@ -152,7 +152,7 @@ def train():
                 save_checkpoint(epoch, net, num_iter)
                 evaluate(net)
             if num_iter%(args.log_step)==0 and num_iter!=0:
-                log(logname, epoch, num_iter, loss.data)
+                log(logname, epoch, num_iter, loss.data,acc=num_correct.item() / args.batch_size)
 
         end_epochtime = time.time()
         print('--------------------------------------------------------')

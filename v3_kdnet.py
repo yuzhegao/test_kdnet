@@ -91,7 +91,7 @@ class KDNet(nn.Module):
         init_num_pts=x.size()[-1]
 
         x = torch.transpose(x,dim0=2,dim1=1).contiguous().view(-1,3) ##[N*1024,3]
-        x = self.fc1(x) ##[N*1024,32]
+        x = F.relu(self.fc1(x)) ##[N*1024,32]
         x = torch.transpose(x.view(-1,init_num_pts,8),dim0=2,dim1=1) ##[N,32,1024]
 
         x1 = self.kdconv(x, c[-1], self.conv1, self.bn1)
