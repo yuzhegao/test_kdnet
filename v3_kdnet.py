@@ -56,7 +56,7 @@ class KDNet(nn.Module):
         if dropout:
             x = F.relu(F.dropout(bn(conv(x)),p=0.5))
         else:
-            x = F.relu(conv(x))
+            x = F.relu(bn(conv(x)))
 
         num_pts = num_pts/2 ## 512
         featdim_out= x.size(1)/3 ## 32

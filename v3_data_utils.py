@@ -99,6 +99,7 @@ def pts_collate(batch):
 
     for k in range(depth):
         split_dims_batch[k]=np.squeeze(split_dims_batch[k])
+        split_dims_batch[k]=np.zeros_like(split_dims_batch[k])
 
     pts_batch=torch.transpose(torch.stack(pts_batch,dim=0),dim0=1,dim1=2)
     label_batch =torch.from_numpy(np.squeeze(label_batch))
